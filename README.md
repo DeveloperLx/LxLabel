@@ -14,7 +14,7 @@ Usage
     label.rightEdgeInset = 6;
     label.shadowBlurRadius = 2;
     label.underlineStyle = NSUnderlineStyleThick;
-    ......(See LxLabel.h)
+    ..................(See LxLabel.h)..................
     
     NSLog(@"factualLineCount = %ld",label.factualLinesCount);    //
     NSLog(@"textRangeAtLine2 : %@",NSStringFromRange([label textRangeAtLineIndex:2]));  //
