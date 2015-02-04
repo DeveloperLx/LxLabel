@@ -1,5 +1,11 @@
 # LxLabel
     An evolutional label inherited from UILabel. It can generate a large number of effect, and use simple properties to set.
+Installation
+------------
+  You only need drag LxLabel.h and LxLabel.m to your project.
+Support
+------------
+  Minimum support iOS version: iOS 6.0
 Usage
 ----------
     LxLabel * label = [[LxLabel alloc]initWithFrame:CGRectMake(20, 120, 200, 300)];
@@ -20,3 +26,10 @@ Usage
     NSLog(@"textRangeAtLine2 : %@",NSStringFromRange([label textRangeAtLineIndex:2]));  //
     
     [self.view addSubview:label];
+Be careful            
+-----------
+    LxLabel must build in automatic reference counting envirmonent!
+    Some property only fit that all the characters in text have same modality!
+License
+-----------
+LxLabel is available under the Apache License 2.0. See the LICENSE file for more info.
