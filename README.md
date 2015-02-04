@@ -1,5 +1,5 @@
 # LxLabel
-    An evolutional label inherited from UILabel. It can generate a large number of effect, and use simple properties to set.
+An evolutional label inherited from UILabel. It can generate a large number of effect, and use simple properties to set. You can change all the new properties dynamically.
 Installation
 ------------
   You only need drag LxLabel.h and LxLabel.m to your project.
@@ -20,7 +20,7 @@ Usage
     label.rightEdgeInset = 6;
     label.shadowBlurRadius = 2;
     label.underlineStyle = NSUnderlineStyleThick;
-    ...................     // See LxLabel.h for more properties...
+    ...................................     // See LxLabel.h for more properties...
     
     NSLog(@"factualLineCount = %ld",label.factualLinesCount);    //
     NSLog(@"textRangeAtLine2 : %@",NSStringFromRange([label textRangeAtLineIndex:2]));  //
