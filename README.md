@@ -1,5 +1,5 @@
 # LxLabel
-An evolutional label inherited from UILabel. It can generate a large number of effect, and simple properties to set.
+    An evolutional label inherited from UILabel. It can generate a large number of effect, and use simple properties to set.
 Usage
 ----------
     LxLabel * label = [[LxLabel alloc]initWithFrame:CGRectMake(20, 120, 200, 300)];
