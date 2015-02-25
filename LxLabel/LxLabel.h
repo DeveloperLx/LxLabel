@@ -49,8 +49,18 @@
 @property (nonatomic,assign) CGFloat obliqueness NS_AVAILABLE_IOS(7_0);
 @property (nonatomic,assign) CGFloat expansion NS_AVAILABLE_IOS(7_0);
 
-@property (nonatomic,readonly) NSInteger factualLinesCount;
+@property (nonatomic,readonly) NSInteger factualLinesCount NS_AVAILABLE_IOS(6_0);
 
-- (NSRange)textRangeAtLineIndex:(NSInteger)lineIndex;
+- (NSRange)textRangeAtLineIndex:(NSInteger)lineIndex NS_AVAILABLE_IOS(6_0);
+
+@property (nonatomic,readonly) NSMutableDictionary * textAttributes NS_AVAILABLE_IOS(6_0);
+@property (nonatomic,readonly) NSMutableParagraphStyle * paragraphStyle NS_AVAILABLE_IOS(6_0);
+@property (nonatomic,readonly) NSShadow * shadow NS_AVAILABLE_IOS(6_0);
+@property (nonatomic,assign) CGRect textRect;
+
+/**
+ *  Need set the property userInteractionEnabled to YES for response.
+ */
+@property (nonatomic,copy) void (^textTouchedAction)(NSInteger touchedLineIndex, NSInteger touchedCharacterIndexForTheLine, NSInteger touchedCharacterIndex, NSAttributedString * touchedCharacterString);
 
 @end

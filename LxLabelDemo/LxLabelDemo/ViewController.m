@@ -16,19 +16,19 @@
     [super viewDidLoad];
     // Do any additional setup after loading the view, typically from a nib.
     
-    LxLabel * label = [[LxLabel alloc]initWithFrame:CGRectMake(20, 120, 200, 300)];
-    label.text = @"An evolutional label inherited from UILabel. It can generate a large number of effect, and simple properties to set. \nSome property only fit that all the characters in text have same modality.";
+    LxLabel * label = [[LxLabel alloc]initWithFrame:CGRectMake(20, 120, 300, 500)];
+    label.text = @"This is a Lxlabel.\nThis is a Lxlabel.\nThis is a Lxlabel.\nThis is a Lxlabel.\nThis is a Lxlabel.\nThis is a Lxlabel.\nThis is a Lxlabel.\nThis is a Lxlabel.\nThis is a Lxlabel.\nThis is a Lxlabel.\nThis is a Lxlabel.\nThis is a Lxlabel.\nThis is a Lxlabel.\nThis is a Lxlabel.\nThis is a Lxlabel.\nThis is a Lxlabel.\nThis is a Lxlabel.\nThis is a Lxlabel.\nThis is a Lxlabel.\nThis is a Lxlabel.\nThis is a Lxlabel.\nThis is a Lxlabel.\nThis is a Lxlabel.\nThis is a Lxlabel.\n ";
     label.backgroundColor = [UIColor cyanColor];
     label.numberOfLines = 0;
     label.characterSpacing = 3;
     label.lineSpacing = 10;
     label.textBackgroundColor = [UIColor yellowColor];
     label.topEdgeInset = 12;
-    label.bottomEdgeInset = 10;
-    label.leftEdgeInset = 8;
+    label.bottomEdgeInset = 30;
+    label.leftEdgeInset = 18;
     label.rightEdgeInset = 6;
     label.shadowColor = [UIColor blueColor];
-    label.shadowOffset = CGSizeMake(10, 10);
+    label.shadowOffset = CGSizeMake(0, 0);
     label.shadowBlurRadius = 2;
     label.underlineStyle = NSUnderlineStyleThick;
     
@@ -36,6 +36,12 @@
     NSLog(@"textRangeAtLine2 : %@",NSStringFromRange([label textRangeAtLineIndex:2]));
     
     [self.view addSubview:label];
+    
+    label.userInteractionEnabled = YES;
+    label.textTouchedAction = ^(NSInteger touchedLineIndex, NSInteger touchedCharacterIndexForTheLine, NSInteger touchedCharacterIndex, NSAttributedString * touchedCharacterString) {
+        
+        NSLog(@"%ld, %ld, %ld, %@", touchedLineIndex,touchedCharacterIndexForTheLine, touchedCharacterIndex, touchedCharacterString); //
+    };
 }
 
 - (void)didReceiveMemoryWarning {

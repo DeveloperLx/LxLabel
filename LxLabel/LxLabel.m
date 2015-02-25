@@ -40,16 +40,25 @@
 
 @interface LxLabel ()
 
-@property (nonatomic,readonly) NSMutableDictionary * textAttributes;
-@property (nonatomic,readonly) NSMutableParagraphStyle * paragraphStyle;
-@property (nonatomic,readonly) NSShadow * shadow;
-@property (nonatomic,assign) CGRect textRect;
-
 @end
 
 @implementation LxLabel
 
-@synthesize textAttributes = _textAttributes, paragraphStyle = _paragraphStyle, shadow = _shadow;
+@synthesize textAttributes = _textAttributes, paragraphStyle = _paragraphStyle, shadow = _shadow, textRect = _textRect;
+
+- (instancetype)init
+{
+    self = [super init];
+    if (self) {
+        self.textTouchedAction = nil;
+    }
+    return self;
+}
+
+- (void)dealloc
+{
+    self.textTouchedAction = nil;
+}
 
 - (NSMutableDictionary *)textAttributes;
 {
@@ -477,6 +486,16 @@
     [self setNeedsDisplay];
 }
 
+- (void)setTextRect:(CGRect)textRect
+{
+    _textRect = textRect;
+    
+    self.topEdgeInset = CGRectGetMinY(self.bounds) - CGRectGetMinY(textRect);
+    self.leftEdgeInset = CGRectGetMinX(self.bounds) - CGRectGetMinX(textRect);
+    self.bottomEdgeInset = CGRectGetMaxY(self.bounds) - CGRectGetMaxY(textRect);
+    self.rightEdgeInset = CGRectGetMaxX(self.bounds) - CGRectGetMaxX(textRect);
+}
+
 - (CGRect)textRect
 {
     UIEdgeInsets edgeInsets = UIEdgeInsetsMake(self.topEdgeInset, self.leftEdgeInset, self.bottomEdgeInset, self.rightEdgeInset);
@@ -541,7 +560,7 @@
     
     CFIndex factualLineCount = CFArrayGetCount(CTFrameGetLines(frame));
     
-    NSAssert((lineIndex >= 0 && lineIndex < factualLineCount), @"行序号超出有效范围");
+    NSAssert((lineIndex >= 0 && lineIndex < factualLineCount), @"LxLabel: 行序号超出有效范围");
     
     CFArrayRef lines = CTFrameGetLines(frame);
     
@@ -554,6 +573,76 @@
     
     return NSMakeRange(lineTextRange.location, lineTextRange.length);
 }
+
+- (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event
+{
+    [super touchesEnded:touches withEvent:event];
+    
+    NSMutableAttributedString * mutableAttributedText = [[NSMutableAttributedString alloc]initWithAttributedString:self.attributedText];
+    NSRange mutableAttributedTextwholeRange = NSMakeRange(0, mutableAttributedText.length);
+    NSMutableParagraphStyle * tempParagraphStyle = [self.paragraphStyle mutableCopy];
+    tempParagraphStyle.lineBreakMode = 0;   // ** Otherwise cannot get lines count **
+    [self.textAttributes setValue:tempParagraphStyle forKey:NSParagraphStyleAttributeName];
+    [self.textAttributes setValue:self.shadow forKey:NSShadowAttributeName];
+    [mutableAttributedText setAttributes:self.textAttributes range:mutableAttributedTextwholeRange];
+    
+    CTFramesetterRef framesetter = CTFramesetterCreateWithAttributedString((CFAttributedStringRef)mutableAttributedText);
+    
+    CGMutablePathRef boundsPath = CGPathCreateMutable();
+    CGPathAddRect(boundsPath, 0, self.textRect);
+    
+    CTFrameRef frame = CTFramesetterCreateFrame(framesetter, CFRangeMake(0, mutableAttributedText.length), boundsPath, 0);
+    
+    CFArrayRef lines = CTFrameGetLines(frame);
+    
+    CFIndex factualLinesCount = CFArrayGetCount(lines);
+    
+    CGPoint origins[factualLinesCount];
+    CTFrameGetLineOrigins(frame, CFRangeMake(0, 0), origins);
+    
+    CGPathRef framePath = CTFrameGetPath(frame);
+    CGRect frameBoundingBox = CGPathGetBoundingBox(framePath);
+    
+    CGPoint touchLocation = [touches.anyObject locationInView:self];
+    
+    CFIndex touchedLineIndex = 0;
+    CTLineRef touchedLine = 0;
+    CGPoint touchedLineOrigin = CGPointZero;
+    
+    for (CFIndex i = 0; i < factualLinesCount; i++) {
+        
+        CGPoint origin = origins[i];
+        
+        CTLineRef line = CFArrayGetValueAtIndex(lines, i);
+        
+        CGFloat descent = 0;
+        CTLineGetTypographicBounds(line, 0, &descent, 0);
+        
+        CGFloat y = CGRectGetMaxY(frameBoundingBox) - origin.y + descent;
+        
+        if (touchLocation.y <= y && touchLocation.x >= origin.x) {
+
+            touchedLineIndex = i;
+            touchedLine = line;
+            touchedLineOrigin = origin;
+            break;
+        }
+    }
+    
+    touchLocation.x -= frameBoundingBox.origin.x;
+    
+    CFIndex touchedCharacterIndex = CTLineGetStringIndexForPosition(touchedLine, touchLocation) - 1;
+    CFRange touchedLineTextRange = CTLineGetStringRange(touchedLine);
+    NSAttributedString * touchedCharacterString = [self.attributedText attributedSubstringFromRange:NSMakeRange(touchedCharacterIndex, 1)];
+        
+    self.textTouchedAction((NSInteger)touchedLineIndex, (NSInteger)(touchedCharacterIndex - touchedLineTextRange.location), (NSInteger)touchedCharacterIndex, touchedCharacterString);
+    
+    CFRelease(framesetter);
+    CFRelease(boundsPath);
+    CFRelease(frame);
+    
+    return;
+} 
 
 @end
 
