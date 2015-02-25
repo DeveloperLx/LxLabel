@@ -26,7 +26,13 @@ Usage
     NSLog(@"textRangeAtLine2 : %@",NSStringFromRange([label textRangeAtLineIndex:2]));  //
     
     [self.view addSubview:label];
-Be careful            
+    
+    label.userInteractionEnabled = YES;
+    label.textTouchedAction = ^(NSInteger touchedLineIndex, NSInteger touchedCharacterIndexForTheLine, NSInteger touchedCharacterIndex, NSAttributedString * touchedCharacterString) {
+        
+        NSLog(@"%ld, %ld, %ld, %@", touchedLineIndex,touchedCharacterIndexForTheLine, touchedCharacterIndex, touchedCharacterString); //
+    };
+Be careful 
 -----------
     LxLabel must build in automatic reference counting envirmonent!
     Some property only fit that all the characters in text have same modality!
