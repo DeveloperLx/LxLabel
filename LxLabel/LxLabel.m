@@ -503,6 +503,11 @@
     return _textRect;
 }
 
+- (CGSize)visibleTextSize
+{
+    return [self textRectForBounds:self.bounds limitedToNumberOfLines:self.numberOfLines].size;
+}
+
 - (void)drawTextInRect:(CGRect)rect
 {
     NSMutableAttributedString * mutableAttributedText = [[NSMutableAttributedString alloc]initWithAttributedString:self.attributedText];

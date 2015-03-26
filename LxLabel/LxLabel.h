@@ -58,6 +58,8 @@
 @property (nonatomic,readonly) NSShadow * shadow NS_AVAILABLE_IOS(6_0);
 @property (nonatomic,assign) CGRect textRect;
 
+@property (nonatomic,readonly) CGSize visibleTextSize;
+
 /**
  *  Need set the property userInteractionEnabled to YES for response.
  */
